@@ -1,0 +1,133 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.App {
+  background-color: #1e2527;
+  color: white;
+  height: 100vh;
+  padding: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header Instructions */
+.instructions {
+  background: #2f3039;
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin: 0 auto 12px auto;
+  font-size: 14px;
+  color: #ccc;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Grid Styles */
+.grid {
+  display: inline-block;
+  border: 2px solid #565a5b;
+  margin-top: 20px;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 80px;
+  height: 80px;
+  border: 1px solid #565a5b;
+  background-color: #293538;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+
+.robot-icon-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Control Buttons */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.buttons button:disabled {
+  background-color: #444;
+  color: #aaa;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+button {
+  background: #1eb5c1;
+  border: 1px solid #1e2527;
+  border-radius: 6px;
+  color: #1e2527;
+  padding: 10px 18px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out;
+}
+
+button:hover {
+  background: #1e2527;
+  color: #1eb5c1;
+  border: 1px solid #1eb5c1;
+}
+
+button.report {
+  margin-top: 32px;
+  background: #1e2527;
+  border: 1px solid #1eb5c1;
+  color: #1eb5c1;
+  padding: 10px 36px;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.1s ease-in-out;
+}
+
+button.report:hover {
+  background: #1eb5c1;
+  color: #1e2527;
+  border: 1px solid #1e2527;
+}
+
+button.reset {
+  margin-top: 32px;
+  background: #1e2527;
+  border: 1px solid #1eb5c1;
+  color: #1eb5c1;
+  padding: 10px 36px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+button.reset:hover {
+  background: #1eb5c1;
+  color: #1e2527;
+}
+
+/* Toast override */
+.Toastify__toast {
+  font-size: 14px;
+}
