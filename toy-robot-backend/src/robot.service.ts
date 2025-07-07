@@ -28,20 +28,12 @@ export class RobotService {
     if (!latest) throw new Error('No current robot');
 
     const { x, y, facing } = latest;
-    console.log(
-      `[COMMAND] Current: (${x}, ${y}, ${facing}) → Command: ${command}`,
-    );
 
     if (command === 'MOVE') {
       const [nx, ny] = this.nextPosition(x, y, facing);
-      console.log(`[MOVE] Attempt: (${nx}, ${ny})`);
       if (nx < 0 || nx > 4 || ny < 0 || ny > 4) {
-        console.log(`[MOVE] Blocked: (${nx}, ${ny}) is out of bounds`);
         throw new Error("Can't move off the board");
       }
-      console.log(
-        `[MOVE] Success: (${x}, ${y}, ${facing}) → (${nx}, ${ny}, ${facing})`,
-      );
       return await this.repo.save({ x: nx, y: ny, facing });
     }
 
@@ -49,10 +41,6 @@ export class RobotService {
       const idx = this.directions.indexOf(facing);
       const newDir = command === 'LEFT' ? (idx + 3) % 4 : (idx + 1) % 4;
       const newFacing = this.directions[newDir];
-      console.log(`[ROTATE] ${command} → ${facing} → ${newFacing}`);
-      console.log(
-        `[ROTATE] Success: (${x}, ${y}, ${facing}) → (${x}, ${y}, ${newFacing})`,
-      );
       return await this.repo.save({ x, y, facing: newFacing });
     }
 

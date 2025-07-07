@@ -11,6 +11,11 @@ import {
   RobotWest,
 } from './components/RobotIcons';
 
+/**
+ * Returns the appropriate robot icon component based on the robot's facing direction
+ * @param {string} direction - The direction the robot is facing (NORTH, EAST, SOUTH, WEST)
+ * @returns {JSX.Element|null} The robot icon component or null if direction is invalid
+ */
 function getRobotComponent(direction) {
   switch (direction) {
     case 'NORTH': return <RobotNorth />;
@@ -21,10 +26,19 @@ function getRobotComponent(direction) {
   }
 }
 
+/**
+ * Main Toy Robot Simulator component
+ * Handles robot placement, movement, and game state management
+ */
 function App() {
   const [robot, setRobot] = useState(null);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
+  /**
+   * Checks if the robot is active (placed on the board)
+   * Shows a warning toast if robot is not active
+   * @returns {boolean} True if robot is active, false otherwise
+   */
   const isRobotActive = useCallback(() => {
     if (!robot || robot.facing === 'NONE') {
       toast.warning("Robot is not on the board.");
@@ -33,6 +47,11 @@ function App() {
     return true;
   }, [robot]);
 
+  /**
+   * Places the robot at the specified coordinates facing north
+   * @param {number} x - X coordinate (0-4)
+   * @param {number} y - Y coordinate (0-4)
+   */
   const placeRobot = useCallback((x, y) => {
     axios.post('http://localhost:3000/robot/place', { x, y, facing: 'NORTH' })
       .then(res => setRobot(res.data))
@@ -41,6 +60,11 @@ function App() {
       );
   }, []);
 
+  /**
+   * Sends a command to the robot (MOVE, LEFT, RIGHT)
+   * Disables buttons temporarily to prevent rapid clicking
+   * @param {string} cmd - The command to send to the robot
+   */
   const sendCommand = useCallback(async (cmd) => {
     if (!isRobotActive() || buttonsDisabled) return;
 
@@ -58,12 +82,22 @@ function App() {
     }
   }, [isRobotActive, buttonsDisabled]);
 
+  /**
+   * Displays the robot's current position and direction
+   * Shows an info toast with robot coordinates and facing direction
+   */
   const handleReport = useCallback(() => {
     if (!isRobotActive()) return;
 
     toast.info(`Robot at (${robot.x}, ${robot.y}) facing ${robot.facing}`);
   }, [isRobotActive, robot]);
 
+  /**
+   * Renders the robot icon at the specified grid position
+   * @param {number} x - X coordinate to check
+   * @param {number} y - Y coordinate to check
+   * @returns {JSX.Element|null} Robot icon if robot is at this position, null otherwise
+   */
   const renderRobot = useCallback((x, y) => {
     if (!robot || robot.x !== x || robot.y !== y) return null;
     return (
@@ -73,6 +107,10 @@ function App() {
     );
   }, [robot]);
 
+  /**
+   * Resets the robot state by clearing it from the backend
+   * Removes the robot from the board and shows a reset message
+   */
   const handleReset = useCallback(async () => {
     try {
       await axios.post(`http://localhost:3000/robot/clear`);
@@ -83,12 +121,14 @@ function App() {
     }
   }, []);
 
+  // Load initial robot state from backend on component mount
   useEffect(() => {
     axios.get('http://localhost:3000/robot/latest')
       .then(res => setRobot(res.data))
       .catch(() => {});
   }, []);
 
+  // Set up keyboard event listeners for robot control
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!isRobotActive()) return;

@@ -66,10 +66,6 @@ toy-robot-simulator/
 
    The backend will be available at `http://localhost:3000`
 
-4. **Run tests:**
-   ```bash
-   npm test
-   ```
 
 ### Frontend Setup
 
@@ -113,34 +109,19 @@ toy-robot-simulator/
 - Invalid moves are ignored and show error messages
 - Robot must be placed before issuing movement commands
 
-## 🧪 Test Instructions
+### Example Usage
 
-Try these example sequences to test the application:
-
-### Test Case A: Basic Movement
+**Basic Movement Example:**
 1. Click on position (0,0) to place robot facing NORTH
 2. Click "MOVE" button
 3. Click "REPORT" button
 4. **Expected Output**: 0,1,NORTH
 
-### Test Case B: Rotation
+**Rotation Example:**
 1. Click on position (0,0) to place robot facing NORTH
 2. Click "LEFT" button
 3. Click "REPORT" button
 4. **Expected Output**: 0,0,WEST
-
-### Test Case C: Complex Movement
-1. Click on position (1,2) to place robot facing NORTH
-2. Click "MOVE" twice
-3. Click "RIGHT"
-4. Click "MOVE"
-5. Click "REPORT"
-6. **Expected Output**: 2,4,EAST
-
-### Test Case D: Boundary Testing
-1. Click on position (0,0) to place robot facing SOUTH
-2. Click "MOVE" - should be ignored (robot would fall off)
-3. Click on position (5,5) - should be ignored (invalid position)
 
 ## 🔧 API Endpoints
 
@@ -164,10 +145,16 @@ The backend includes comprehensive unit tests covering:
 - Error handling for invalid commands
 - Database operations
 
-Run tests with:
+**Run backend tests**:
 ```bash
 cd toy-robot-backend
 npm test
+```
+
+**End-to-End Tests:**
+```bash
+cd toy-robot-backend
+npm run test:e2e      # Run end-to-end API tests
 ```
 
 ### Frontend Testing
@@ -213,32 +200,12 @@ All errors are displayed to the user via toast notifications.
 ### Deviations from Design
 
 - Added a "CLEAR" endpoint to remove robot from table
-- Enhanced error handling with detailed logging
-- Added comprehensive unit tests beyond basic examples
-- Implemented real-time state updates
 
 ## 📝 Future Enhancements
 
-- Arrow key support for movement commands
-- Visual movement history display
+- Visual movement history display and jump to previous state
 - Undo/Redo functionality
 - Multiple robot support
-- WebSocket integration for real-time updates
 - Enhanced UI animations
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
----
-
-**Time Investment**: ~4 hours (as per requirements)
-**Status**: Complete with all core functionality, testing, and documentation 
+- Command queue UI: Stack and batch commands before execution to avoid race conditoin
+- Analytics dashboard: Track number of commands, most-used direction, etc.

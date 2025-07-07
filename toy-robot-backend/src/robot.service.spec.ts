@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RobotService } from './robot.service';
 import { Robot } from './robot.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 describe('RobotService', () => {
   let service: RobotService;
@@ -18,6 +19,12 @@ describe('RobotService', () => {
         {
           provide: getRepositoryToken(Robot),
           useValue: fakeRepo,
+        },
+        {
+          provide: DataSource,
+          useValue: {
+            transaction: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -43,9 +50,7 @@ describe('RobotService', () => {
     test.each(invalidPositions)(
       'should reject out-of-bounds placement at (%i, %i) facing %s',
       async (x: number, y: number, facing: string) => {
-        await expect(service.place(x, y, facing)).rejects.toThrow(
-          'Invalid position',
-        );
+        await expect(service.place(x, y, facing)).rejects.toThrow('Invalid position');
       },
     );
   });
@@ -54,14 +59,9 @@ describe('RobotService', () => {
   describe('Reject invalid direction', () => {
     const invalidFacings = ['UP', 'DOWN', '', null, undefined];
 
-    test.each(invalidFacings)(
-      'should reject invalid direction "%s"',
-      async (facing: string) => {
-        await expect(service.place(2, 2, facing)).rejects.toThrow(
-          'Invalid direction',
-        );
-      },
-    );
+    test.each(invalidFacings)('should reject invalid direction "%s"', async (facing: string) => {
+      await expect(service.place(2, 2, facing)).rejects.toThrow('Invalid direction');
+    });
   });
 
   // Valid Placement
@@ -94,12 +94,8 @@ describe('RobotService', () => {
     test.each(leftRotations)(
       'should rotate LEFT from %s to %s',
       async (start: string, expected: string) => {
-        service.findLatest = jest
-          .fn()
-          .mockResolvedValue({ x: 1, y: 1, facing: start });
-        fakeRepo.save = jest
-          .fn()
-          .mockResolvedValue({ x: 1, y: 1, facing: expected });
+        service.findLatest = jest.fn().mockResolvedValue({ x: 1, y: 1, facing: start });
+        fakeRepo.save = jest.fn().mockResolvedValue({ x: 1, y: 1, facing: expected });
         const result = await service.handleCommand('LEFT');
         expect(result.facing).toBe(expected);
       },
@@ -119,9 +115,7 @@ describe('RobotService', () => {
       'should prevent moving off grid from (%i, %i) facing %s',
       async (x: number, y: number, facing: string) => {
         service.findLatest = jest.fn().mockResolvedValue({ x, y, facing });
-        await expect(service.handleCommand('MOVE')).rejects.toThrow(
-          "Can't move off the board",
-        );
+        await expect(service.handleCommand('MOVE')).rejects.toThrow("Can't move off the board");
       },
     );
   });
@@ -137,17 +131,9 @@ describe('RobotService', () => {
 
     test.each(moves)(
       'should move from (%i, %i) %s to (%i, %i)',
-      async (
-        x: number,
-        y: number,
-        facing: string,
-        expectedX: number,
-        expectedY: number,
-      ) => {
+      async (x: number, y: number, facing: string, expectedX: number, expectedY: number) => {
         service.findLatest = jest.fn().mockResolvedValue({ x, y, facing });
-        fakeRepo.save = jest
-          .fn()
-          .mockResolvedValue({ x: expectedX, y: expectedY, facing });
+        fakeRepo.save = jest.fn().mockResolvedValue({ x: expectedX, y: expectedY, facing });
         const result = await service.handleCommand('MOVE');
         expect(result.x).toBe(expectedX);
         expect(result.y).toBe(expectedY);
